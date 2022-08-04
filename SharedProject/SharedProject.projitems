@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>1ac73dfb-ef35-47d3-adba-71dd7ffcfb98</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SharedProject</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AppConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Command2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Subst.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Network.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HyperV.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DBConnect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Directory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Azure.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)File.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IListEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JSON.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Log.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\InformationSchema.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Environment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ExecutionGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ExecutionGroup2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ExecutionGroupScript.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ExecutionGroupScript2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ExecutionGroupScriptLog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ExecutionGroupScriptSelector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ExternalPlan.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ExternalRun.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Iteration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Machine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Machine2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Machine3.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Project.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Project2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Run.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Script.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\TestCaseResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\TestEnvironment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\TestRailStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\TestRailTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MySQL.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectListEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Registry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringCipher.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StringEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestRail\APIClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestRail\APIException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)data\archive.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\build.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\builddeployrun.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\citrix_receiver.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\computer.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\copy.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\create.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\deploybuildrun.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\display.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\fail_small.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\filter.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\import.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\pass_small.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\ping.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\R.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\rdp.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\refresh.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\report.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\rft.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\rqmtestcase.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\rqm_execution.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\run.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\save.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\schedule.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\selenium.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\settings.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\start.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\stop.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\stopwatch.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\tightvnc_interact.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\tightvnc_view.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\turn_off.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\update.jpg" />
+    <None Include="$(MSBuildThisFileDirectory)data\uploadresults.jpg" />
+  </ItemGroup>
+</Project>
