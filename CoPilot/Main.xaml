@@ -1,0 +1,131 @@
+﻿<Window x:Class="CoPilot.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CoPilot"
+        mc:Ignorable="d"
+        Title="Testright CoPilot v0.6" Height="640" Width="680"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+
+        <!-- animate button when mouse hovered -->
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Blue"></Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Click">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard BeginTime="00:00:00" 
+                        RepeatBehavior="Forever" 
+                                    AutoReverse="True"
+                        Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)">
+                                <ColorAnimation From="Black" To="Red" Duration="0:0:1"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+
+
+    <Grid>
+        <GroupBox x:Name="groupBox" Header="Machines" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="472" Width="652">
+            <Grid HorizontalAlignment="Left" Height="425" Margin="10,10,-2,0" VerticalAlignment="Top" Width="632">
+                <ListView x:Name="MachinesListView" HorizontalAlignment="Left" Height="373" Margin="10,10,0,0" VerticalAlignment="Top" Width="618">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="ID" DisplayMemberBinding="{Binding id}"/>
+                            <GridViewColumn Header="First Name" DisplayMemberBinding="{Binding name}"/>
+                            <GridViewColumn Header="Host Type" DisplayMemberBinding="{Binding host_type}"/>
+                            <GridViewColumn Header="Host Name" DisplayMemberBinding="{Binding host_name}"/>
+                            <GridViewColumn Header="Last Boot Time" DisplayMemberBinding="{Binding blank}"/>
+                            <GridViewColumn Header="Comment" DisplayMemberBinding="{Binding comment}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <Button x:Name="MachinesCreateButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="10,388,0,0" Height="32" Click="MachinesCreateButton_Click" ToolTip="Create">
+                    <Image Source="..\data\create.jpg"/>
+                </Button>
+                <Button x:Name="MachinesUpdateButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="47,388,0,0" Height="32" Click="MachinesUpdateButton_Click" ToolTip="Update">
+                    <Image Source="..\data\update.jpg"/>
+                </Button>
+                <Button x:Name="MachinesArchiveButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="84,388,0,0" Height="32" Click="MachinesArchiveButton_Click" ToolTip="Archive">
+                    <Image Source="..\data\archive.jpg"/>
+                </Button>
+                <Button x:Name="MachinesPingButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="158,388,0,0" Height="32" Click="MachinesPingButton_Click" ToolTip="Ping machine">
+                    <Image Source="..\data\ping.jpg"/>
+                </Button>
+                <Button x:Name="MachinesLastBootTimeButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="195,388,0,0" Height="32" Click="MachinesLastBootTimeButton_Click" ToolTip="Refresh Last Boot Time">
+                    <Image Source="..\data\stopwatch.jpg"/>
+                </Button>
+                <Button x:Name="MachinesStartButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="232,388,0,0" Height="32" Click="MachinesStartButton_Click" ToolTip="Start machine">
+                    <Image Source="..\data\start.jpg"/>
+                </Button>
+                <Button x:Name="MachinesSaveButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="269,388,0,0" Height="32" Click="MachinesSaveButton_Click" ToolTip="Save machine">
+                    <Image Source="..\data\save.jpg"/>
+                </Button>
+                <Button x:Name="MachinesStopButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="306,388,0,0" Height="32" Click="MachinesStopButton_Click" ToolTip="Stop machine">
+                    <Image Source="..\data\stop.jpg"/>
+                </Button>
+                <Button x:Name="MachinesRestartButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="343,388,0,0" Height="32" Click="MachinesRestartButton_Click" ToolTip="Restart machine">
+                    <Image Source="..\data\turn_off.jpg"/>
+                </Button>
+                <Button x:Name="MachinesCitrixReceiverButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="380,388,0,0" Height="32" Click="MachinesCitrixReceiverButton_Click" ToolTip="Interact via Citrix Receiver">
+                    <Image Source="..\data\citrix_receiver.jpg"/>
+                </Button>
+                <Button x:Name="MachinesRemoteDesktopButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="417,388,0,0" Height="32" Click="MachinesRemoteDesktopButton_Click" ToolTip="Interact via Remote Desktop">
+                    <Image Source="..\data\rdp.jpg"/>
+                </Button>
+                <Button x:Name="MachinesVNCViewButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="454,388,0,0" Height="32" Click="MachinesVNCViewButton_Click" ToolTip="View via VNC">
+                    <Image Source="..\data\tightvnc_view.jpg"/>
+                </Button>
+                <Button x:Name="MachinesVNCInteractButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="491,388,0,0" Height="32" Click="MachinesVNCInteractButton_Click" ToolTip="Interact via VNC">
+                    <Image Source="..\data\tightvnc_interact.jpg"/>
+                </Button>
+                <Button x:Name="MachinesRefreshButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="121,388,0,0" Height="32" Click="MachinesRefreshButton_Click">
+                    <Image Source="..\data\refresh.jpg"/>
+                </Button>
+            </Grid>
+        </GroupBox>
+        <StatusBar x:Name="StatusBar" HorizontalAlignment="Left" Height="21" Margin="0,578,0,0" VerticalAlignment="Top" Width="672">
+            <StatusBarItem>
+                <TextBlock Name="StatusBarText" />
+            </StatusBarItem>
+        </StatusBar>
+        <Button x:Name="RecreateRDriveButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="43,541,0,0" Height="32" Click="RecreateRDriveButton_Click" RenderTransformOrigin="1.75,4.5" ToolTip="(Re)create R drive">
+            <Image Source="..\data\R.jpg"/>
+        </Button>
+        <Button x:Name="StartSeleniumButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="117,541,0,0" Height="32" Click="StartSeleniumButton_Click" RenderTransformOrigin="1.75,4.5" ToolTip="Start Selenium">
+            <Image Source="..\data\selenium.jpg"/>
+        </Button>
+        <Button x:Name="ManageTestArtifactsButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="154,541,0,0" Height="32" Click="ManageTestArtifactsButton_Click" RenderTransformOrigin="1.75,4.5" ToolTip="Manage Test Artifacts">
+            <Image Source="..\data\rqmtestcase.jpg"/>
+        </Button>
+        <Button x:Name="ManageExecutionGroupsButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="191,541,0,0" Height="32" Click="ManageExecutionGroupsButton_Click" RenderTransformOrigin="1.75,4.5" ToolTip="Manage Execution Groups">
+            <Image Source="..\data\rqm_execution.jpg"/>
+        </Button>
+        <Button x:Name="ManageAutomationProjectsButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="228,541,0,0" Height="32" Click="ManageAutomationProjectsButton_Click" RenderTransformOrigin="1.75,4.5" ToolTip="Manage Automation Projects">
+            <Image Source="..\data\computer.jpg"/>
+        </Button>
+        <Button x:Name="ExecutionSchedulerButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="265,541,0,0" Height="32" Click="ExecutionSchedulerButton_Click" RenderTransformOrigin="1.75,4.5" ToolTip="Execution Scheduler">
+            <Image Source="..\data\schedule.jpg"/>
+        </Button>
+        <Button x:Name="ExecutionReporterButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="302,541,0,0" Height="32" Click="ExecutionReporterButton_Click" RenderTransformOrigin="1.75,4.5" ToolTip="Execution Reporter">
+            <Image Source="..\data\report.jpg"/>
+        </Button>
+        <Button x:Name="ExecutionMonitorButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="339,541,0,0" Height="32" Click="ExecutionMonitorButton_Click" RenderTransformOrigin="1.75,4.5" ToolTip="Execution Monitor">
+            <Image Source="..\data\display.jpg"/>
+        </Button>
+        <Button x:Name="SettingsButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="376,541,0,0" Height="32" Click="SettingsButton_Click" RenderTransformOrigin="1.75,4.5" ToolTip="Settings">
+            <Image Source="..\data\settings.jpg"/>
+        </Button>
+        <Button x:Name="StartRFTButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="32" Margin="80,541,0,0" Height="32" Click="StartRFTButton_Click" RenderTransformOrigin="1.75,4.5" ToolTip="Start RFT">
+            <Image Source="..\data\rft.jpg"/>
+        </Button>
+
+    </Grid>
+</Window>
