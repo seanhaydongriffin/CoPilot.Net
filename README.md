@@ -35,6 +35,60 @@ screenshots here
 
 TBD
 
+Machine Management
+
+Manage Hosts, Remote Control Hosts
+
+![manage hosts](https://user-images.githubusercontent.com/28795922/183669190-e5bda33f-a1bf-44a4-9402-7dbede79fe77.png)
+
+
+
+Test Artifact Management
+
+Manage Projects, Environments, Iterations and Test Case Scripts
+
+
+
+Execution Group Management
+
+Manage Groups, Run Groups
+
+
+
+Execution Monitoring
+
+Manage Runs, Monitor Runs, Parallel Monitoring
+
+
+
+Script Logs
+
+View and Filter Logs
+
+
+
+Automation Project Management
+
+Deploy Project ...
+
+
+
+Execution Scheduling
+
+Manage Schedules, Monitor Schedules
+
+
+
+Execution Reporting
+
+Generate and Export Reports, Generate Charts, Manage Work, Manage Defect Analysis
+
+
+
+
+
+
+
 ---  
 
 ### Why use it
