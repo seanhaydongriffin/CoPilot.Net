@@ -26,5 +26,16 @@ screenshots here
 - [Contact](../../..)
 - [Wiki](../../wiki)
 - [FAQ](../../wiki/FAQ)
+
 ---  
-  
+
+## What it does
+
+TBD
+
+---  
+
+## Why use it
+
+TBD
+
