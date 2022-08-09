@@ -2,6 +2,8 @@
 
 `CoPilot` is a test automation suite.
 
+Simple, fast and effective execution of complex test suites.
+
 Find out more in the [Wiki on Github](../../wiki).
 
 ---
