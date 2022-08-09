@@ -5,7 +5,7 @@
 Find out more in the [Wiki on Github](../../wiki).
 
 ---
-logo here
+![image](https://user-images.githubusercontent.com/28795922/183651743-bfdc76e4-0b80-47f2-9181-5c71996cfc07.png)
 ---
 screenshots here
 ---
