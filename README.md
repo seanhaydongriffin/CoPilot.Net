@@ -5,7 +5,7 @@
 Find out more in the [Wiki on Github](../../wiki).
 
 ---
-![image](https://user-images.githubusercontent.com/28795922/183651743-bfdc76e4-0b80-47f2-9181-5c71996cfc07.png)
+![co-pilot](https://user-images.githubusercontent.com/28795922/183652390-872da29f-162a-4d62-ba6e-c8624215ef57.png)
 ---
 screenshots here
 ---
