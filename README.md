@@ -23,7 +23,7 @@ screenshots here
 - What it does
 - Why use it
 - [Bug Tracker](../../issues)
-- [Contact](..)
+- [Contact](../../..)
 - [Wiki](../../wiki)
 - [FAQ](../../wiki/FAQ)
 ---  
