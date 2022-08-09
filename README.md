@@ -18,7 +18,7 @@ screenshots here
 
 ---
 
-<h3>Index</h3>
+### Index
   
 - What it does
 - Why use it
