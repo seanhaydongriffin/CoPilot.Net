@@ -14,7 +14,10 @@ screenshots here
 
 ---
 
-<p align="center"><img src="https://user-images.githubusercontent.com/28795922/183650250-e1704138-8697-47fb-8584-5f9b0db5caae.jpg"/></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/28795922/183650250-e1704138-8697-47fb-8584-5f9b0db5caae.jpg"/><img src="https://user-images.githubusercontent.com/28795922/183656161-5cf74a09-2bdf-4e66-bb0c-226ede639de4.png"/></p>
+
+![image](https://user-images.githubusercontent.com/28795922/183656161-5cf74a09-2bdf-4e66-bb0c-226ede639de4.png)
+
 
 ---
 
