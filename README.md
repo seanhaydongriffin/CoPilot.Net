@@ -25,6 +25,6 @@ screenshots here
 - [Bug Tracker](../../issues)
 - Contact
 - [Wiki](../../wiki)
-- [FAQ](../../wiki/faq)
+- [FAQ](../../wiki/FAQ)
 ---  
   
