@@ -9,7 +9,7 @@ logo here
 ---
 screenshots here
 ---
-![image](https://user-images.githubusercontent.com/28795922/183649882-ebd6527d-0a0d-4676-8c2f-1a0a9290d211.png)
+![download it from github](https://user-images.githubusercontent.com/28795922/183650250-e1704138-8697-47fb-8584-5f9b0db5caae.jpg)
 ---
 ## Index
   
