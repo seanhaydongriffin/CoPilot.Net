@@ -18,7 +18,7 @@ screenshots here
 
 ---
 
-<h2>Index</h2>
+<h3>Index</h3>
   
 - What it does
 - Why use it
