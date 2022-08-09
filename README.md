@@ -22,9 +22,9 @@ screenshots here
   
 - What it does
 - Why use it
-- Bug Tracker
+- [Bug Tracker](../../issues)
 - Contact
-- Wiki
+- [Wiki](../../wiki)
 - FAQ
 ---  
   
