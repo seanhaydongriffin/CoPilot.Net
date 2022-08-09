@@ -18,7 +18,7 @@ screenshots here
 
 ---
 
-## Index
+<h2>Index</h2>
   
 - What it does
 - Why use it
