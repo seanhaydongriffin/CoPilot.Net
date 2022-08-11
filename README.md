@@ -23,7 +23,7 @@ screenshots here
 ### Index
   
 - What it does
-- [Why use it](About-CoPilot.Net#so-why-copilotnet)
+- [Why use it](../../wiki/About-CoPilot.Net#so-why-copilotnet)
 - [Bug Tracker](../../issues)
 - [Contact](../../..)
 - [Wiki](../../wiki)
