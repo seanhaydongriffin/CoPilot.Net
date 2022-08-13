@@ -72,6 +72,8 @@ Section "" ;No components page, name is not important
   File "psubst.bat"
   File "psubstgit.bat"
   File "psubsttfs.bat"
+  File "control_automation_machine_StructureDump.sql"
+  File "blank_release_1_se_project_StructureDump.sql"
   File "Settings\bin\Release\Settings.exe"
   File "ExecutionGroupCreateUpdate\bin\Release\ExecutionGroupCreateUpdate.exe"
   File "ExecutionGroupCreateUpdate\bin\Release\ExecutionGroupCreateUpdate.pdb"
