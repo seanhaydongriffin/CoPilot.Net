@@ -144,7 +144,7 @@ namespace AutomationAdapter
                 Main.StatusBarSetText("Status: Connected");
 
                 // Main.StatusBarSetText("Please Wait. Getting the run values for this machine");
-                machine_arr = dbConnect.Select<Machine>("SELECT run_ids, run_auto_archive_script_logs, source_control_args FROM machine WHERE host_name = '" + current_host_name + "';");
+                machine_arr = dbConnect.Select<Machine>("SELECT run_ids, run_auto_archive_script_logs, source_control_args FROM machine WHERE host_name = '" + current_host_name + "';", false);
 
                 if (machine_arr == null)
                 {
@@ -463,16 +463,19 @@ namespace AutomationAdapter
 
                 if (App.run_ids.Length > 0)
                 {
+                    LogMessage("Using run_ids '" + App.run_ids + "'");
                     run = new List<Run>();
                     var single_run = JsonConvert.DeserializeObject<SharedProject.Models.Run>(App.run_ids);
                     run.Add(single_run);
                 }
 
                 if (machine_arr != null && machine_arr[0].run_ids.Length > 0)
-
+                {
+                    LogMessage("Using run_ids '" + machine_arr[0].run_ids + "'");
                     run = JsonConvert.DeserializeObject<List<SharedProject.Models.Run>>(machine_arr[0].run_ids);
+                }
 
-                LogMessage("Proj ID = " + run[0].p + ", Exe Grp ID = " + run[0].eg + ", First Run = " + run[0].egFst + ", Script ID = " + run[0].egs + ", Pre-Run Delay = " + run[0].egsDel);
+//                LogMessage("Proj ID = " + run[0].p + ", Exe Grp ID = " + run[0].eg + ", First Run = " + run[0].egFst + ", Script ID = " + run[0].egs + ", Pre-Run Delay = " + run[0].egsDel);
 
                 if (run.Count > 1)
                 {
@@ -512,10 +515,10 @@ namespace AutomationAdapter
 
                     project_path = project_arr[0].path;
 
-                // get the script id, script name, project path and post run delay
+                // get the script id, script name, project path, post run delay and elevated
                 Main.StatusBarSetText("Status: Connected");
                 dbConnect = new DBConnect(project_arr[0].schema_name);
-                execution_group_script_arr = dbConnect.Select<ExecutionGroupScript2>("SELECT s.name AS scriptName, s.external_id AS scriptExternalId, i.name AS iterationName, e.name AS environmentName, egs.post_run_delay AS postRunDelay, eg.name, eg.device_notifications AS deviceNotifications, egs.shared_folder_1 AS sharedFolder1 FROM execution_group_script egs, script s, execution_group eg, iteration i, environment e WHERE egs.id = " + run[0].egs + " AND egs.script_id = s.id AND egs.execution_group_id = eg.id AND eg.iteration_id = i.id AND eg.environment_id = e.id;");
+                execution_group_script_arr = dbConnect.Select<ExecutionGroupScript2>("SELECT s.name AS scriptName, s.external_id AS scriptExternalId, i.name AS iterationName, e.name AS environmentName, egs.post_run_delay AS postRunDelay, egs.elevated AS elevated, eg.name, eg.device_notifications AS deviceNotifications, egs.shared_folder_1 AS sharedFolder1 FROM execution_group_script egs, script s, execution_group eg, iteration i, environment e WHERE egs.id = " + run[0].egs + " AND egs.script_id = s.id AND egs.execution_group_id = eg.id AND eg.iteration_id = i.id AND eg.environment_id = e.id;");
 
                 if (execution_group_script_arr == null)
                 {
@@ -524,6 +527,8 @@ namespace AutomationAdapter
                     timer.Change(10 * 1000, Timeout.Infinite);
                     return;
                 }
+
+                Log.Debug("Execution Group Script ID = " + run[0].egs + ", Name = " + execution_group_script_arr[0].scriptName + ", Post Run Delay = " + execution_group_script_arr[0].postRunDelay + ", Shared Folder 1 = " + execution_group_script_arr[0].sharedFolder1);
 
                 if (script_name.Length == 0 && execution_group_script_arr[0].scriptName.Length > 0)
 
@@ -560,7 +565,7 @@ namespace AutomationAdapter
                         LogMessage("Mapping S: to Shared Folder \"" + execution_group_script_arr[0].sharedFolder1 + "\" - attempt " + i);
 
 //                        Network.MapNetworkDrive("S", execution_group_script_arr[0].sharedFolder1);
-                        Command2.DoProcess("net", "use /D S:");
+                        Command2.DoProcess("net", "use S: /delete /y");
                         Command2.DoProcess("net", @"use S: " + execution_group_script_arr[0].sharedFolder1);
 
                         S_drive_exists = Drive.Exists('S');
@@ -647,13 +652,26 @@ namespace AutomationAdapter
                             System.Threading.Thread.Sleep(1000);
                         }
 
-                        LogMessage("Executing \"" + exe + "\"");
+                        // LogMessage("execution_group_script_arr[0].elevated = " + execution_group_script_arr[0].elevated);
+
+                        if (execution_group_script_arr[0].elevated == true)
+
+                            LogMessage("Executing (elevated) \"" + exe + "\"");
+                        else
+
+                            LogMessage("Executing \"" + exe + "\"");
+
                         var script_path_pos = script_path_and_filename.LastIndexOf('\\');
                         var script_path = script_path_and_filename.Substring(0, script_path_pos);
 
                         var _processStartInfo = new ProcessStartInfo();
                         _processStartInfo.WorkingDirectory = project_path + "\\" + script_path;
                         _processStartInfo.FileName = exe;
+
+                        if (execution_group_script_arr[0].elevated == true)
+
+                            _processStartInfo.Verb = "runas";
+
                         var process = Process.Start(_processStartInfo);
                         process.WaitForExit();
                         exit_code = process.ExitCode;
