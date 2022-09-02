@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32602.291
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoPilot", "CoPilot\CoPilot.csproj", "{BCB5BD12-A07B-444F-AB29-589A8816D7C6}"
 EndProject
@@ -17,13 +17,24 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomationAdapter", "Automa
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedProject", "SharedProject\SharedProject.shproj", "{1AC73DFB-EF35-47D3-ADBA-71DD7FFCFB98}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "runeg", "runeg\runeg.csproj", "{B1AC1F3C-BE63-4CDC-B4A6-C04BF14185DE}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedProjectWpf", "SharedProjectWpf\SharedProjectWpf.shproj", "{41C57FB6-2AF8-4365-8A53-2592F97FD4D3}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SharedProject\SharedProject.projitems*{1ac73dfb-ef35-47d3-adba-71dd7ffcfb98}*SharedItemsImports = 13
+		SharedProjectWpf\SharedProjectWpf.projitems*{41c57fb6-2af8-4365-8a53-2592f97fd4d3}*SharedItemsImports = 13
+		SharedProjectWpf\SharedProjectWpf.projitems*{67e95335-10ad-4780-aa22-8e80ab532b04}*SharedItemsImports = 4
 		SharedProject\SharedProject.projitems*{67e95335-10ad-4780-aa22-8e80ab532b04}*SharedItemsImports = 4
+		SharedProjectWpf\SharedProjectWpf.projitems*{8ceb0de9-060e-446d-b5bb-5e55101c0dbf}*SharedItemsImports = 4
 		SharedProject\SharedProject.projitems*{8ceb0de9-060e-446d-b5bb-5e55101c0dbf}*SharedItemsImports = 4
+		SharedProject\SharedProject.projitems*{b1ac1f3c-be63-4cdc-b4a6-c04bf14185de}*SharedItemsImports = 4
+		SharedProjectWpf\SharedProjectWpf.projitems*{bcb5bd12-a07b-444f-ab29-589a8816d7c6}*SharedItemsImports = 4
 		SharedProject\SharedProject.projitems*{bcb5bd12-a07b-444f-ab29-589a8816d7c6}*SharedItemsImports = 4
+		SharedProjectWpf\SharedProjectWpf.projitems*{da526b02-838c-4f1d-84a0-78e27c358af2}*SharedItemsImports = 4
 		SharedProject\SharedProject.projitems*{da526b02-838c-4f1d-84a0-78e27c358af2}*SharedItemsImports = 4
+		SharedProjectWpf\SharedProjectWpf.projitems*{f28b4351-10e8-4955-90a0-732261f2aaa3}*SharedItemsImports = 4
 		SharedProject\SharedProject.projitems*{f28b4351-10e8-4955-90a0-732261f2aaa3}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,8 +62,15 @@ Global
 		{DA526B02-838C-4F1D-84A0-78E27C358AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA526B02-838C-4F1D-84A0-78E27C358AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA526B02-838C-4F1D-84A0-78E27C358AF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1AC1F3C-BE63-4CDC-B4A6-C04BF14185DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1AC1F3C-BE63-4CDC-B4A6-C04BF14185DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1AC1F3C-BE63-4CDC-B4A6-C04BF14185DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1AC1F3C-BE63-4CDC-B4A6-C04BF14185DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {06D4A3FD-6D7D-4153-A9A6-EAFFD2F95A1B}
 	EndGlobalSection
 EndGlobal

@@ -82,6 +82,8 @@ Section "" ;No components page, name is not important
   File "RunExecutionGroup\bin\Release\RoboSharp.dll"
   File "RunExecutionGroup\bin\Release\RunExecutionGroup.exe"
   File "RunExecutionGroup\bin\Release\RunExecutionGroup.pdb"
+  File "runeg\bin\Release\BetterConsoleTables.dll"
+  File "runeg\bin\Release\runeg.exe"
 
   SetOutPath $INSTDIR\data
   
