@@ -28,7 +28,8 @@ namespace CoPilot
             this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
 
             TextBlock.Update(StatusBarText, "Please Wait. Getting projects ...");
-            projects = Project2.Query("SELECT id, path, schema_name, external_app, external_id, external_name FROM project WHERE archived = 0 LIMIT " + num_records_per_page + ";", "control_automation_machine");
+            var dbConnect = new DBConnect("control_automation_machine");
+            projects = dbConnect.Select<Project2>("SELECT id, path, schema_name, external_app, external_id, external_name FROM project WHERE archived = 0 LIMIT " + num_records_per_page + ";");
             TextBlock.ClearNoError(StatusBarText);
 
 
@@ -181,7 +182,9 @@ namespace CoPilot
 
             // refresh the Execution Groups listview
             TextBlock.Update(StatusBarText, "Please Wait. Getting execution groups ...");
-            ExecutionGroup2.QueryToListView(ExecutionGroupsListView, "SELECT eg.id, eg.name, i.name AS iteration, e.name AS test_environment, eg.start_date_time, eg.end_date_time, eg.result FROM execution_group eg, iteration i, environment e WHERE eg.iteration_id = i.id AND eg.environment_id = e.id" + filter_clause + " ORDER BY eg.name ASC LIMIT " + num_records_per_page + ";", project.schema_name);
+
+            ExecutionGroupsListView.FromQuery<ExecutionGroup2>("SELECT eg.id, eg.name, i.name AS iteration, e.name AS test_environment, eg.start_date_time, eg.end_date_time, eg.result FROM execution_group eg, iteration i, environment e WHERE eg.iteration_id = i.id AND eg.environment_id = e.id" + filter_clause + " ORDER BY eg.name ASC LIMIT " + num_records_per_page + ";", project.schema_name);
+//            ExecutionGroup2.QueryToListView(ExecutionGroupsListView, "SELECT eg.id, eg.name, i.name AS iteration, e.name AS test_environment, eg.start_date_time, eg.end_date_time, eg.result FROM execution_group eg, iteration i, environment e WHERE eg.iteration_id = i.id AND eg.environment_id = e.id" + filter_clause + " ORDER BY eg.name ASC LIMIT " + num_records_per_page + ";", project.schema_name);
             TextBlock.ClearNoError(StatusBarText);
 
         }
@@ -266,7 +269,8 @@ namespace CoPilot
 
             // refresh the Execution Groups listview
             TextBlock.Update(StatusBarText, "Please Wait. Getting execution groups ...");
-            ExecutionGroup2.QueryToListView(ExecutionGroupsListView, "SELECT eg.id, eg.name, i.name AS iteration, e.name AS test_environment, eg.start_date_time, eg.end_date_time, eg.result FROM execution_group eg, iteration i, environment e WHERE eg.iteration_id = i.id AND eg.environment_id = e.id" + filter_clause + " ORDER BY eg.name ASC LIMIT " + num_records_per_page + ";", project.schema_name);
+            ExecutionGroupsListView.FromQuery<ExecutionGroup2>("SELECT eg.id, eg.name, i.name AS iteration, e.name AS test_environment, eg.start_date_time, eg.end_date_time, eg.result FROM execution_group eg, iteration i, environment e WHERE eg.iteration_id = i.id AND eg.environment_id = e.id" + filter_clause + " ORDER BY eg.name ASC LIMIT " + num_records_per_page + ";", project.schema_name);
+//            ExecutionGroup2.QueryToListView(ExecutionGroupsListView, "SELECT eg.id, eg.name, i.name AS iteration, e.name AS test_environment, eg.start_date_time, eg.end_date_time, eg.result FROM execution_group eg, iteration i, environment e WHERE eg.iteration_id = i.id AND eg.environment_id = e.id" + filter_clause + " ORDER BY eg.name ASC LIMIT " + num_records_per_page + ";", project.schema_name);
             TextBlock.ClearNoError(StatusBarText);
 
 

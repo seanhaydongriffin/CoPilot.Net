@@ -86,7 +86,8 @@ namespace CoPilot
         private void ListView_Refresh_with_MySql_query_and_set_item_selected_by_id(ListView lv, string mysql_query, string db)
         {
             TextBlock.Update(StatusBarText, "Please Wait. Getting machines ...");
-            var execution_schedule_line = Machine2.Query(mysql_query, db);
+            var dbConnect = new DBConnect(db);
+            var execution_schedule_line = dbConnect.Select<Machine2>(mysql_query);
             TextBlock.ClearNoError(StatusBarText);
             lv.ItemsSource = null;
             lv.ItemsSource = execution_schedule_line;

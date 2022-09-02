@@ -37,7 +37,8 @@ namespace CoPilot
             this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
 
             TextBlock.Update(StatusBarText, "Please Wait. Getting projects ...");
-            projects = Project2.Query("SELECT id, path, schema_name, external_app, external_id, external_name FROM project WHERE archived = 0 LIMIT " + num_records_per_page + ";", "control_automation_machine");
+            var dbConnect = new DBConnect("control_automation_machine");
+            projects = dbConnect.Select<Project2>("SELECT id, path, schema_name, external_app, external_id, external_name FROM project WHERE archived = 0 LIMIT " + num_records_per_page + ";");
             TextBlock.ClearNoError(StatusBarText);
 
             // The following will update all controls bound to "projects" above (ie. ProjectPathComboBox)
@@ -225,17 +226,20 @@ namespace CoPilot
 
             // refresh the Test Environments listview
             TextBlock.Update(StatusBarText, "Please Wait. Getting test environments ...");
-            TestEnvironment.QueryToListView(TestEnvironmentsListView, "SELECT id, name, external_id FROM environment" + filter_clause + " LIMIT " + num_records_per_page + ";", project.schema_name);
+            TestEnvironmentsListView.FromQuery<TestEnvironment>("SELECT id, name, external_id FROM environment" + filter_clause + " LIMIT " + num_records_per_page + ";", project.schema_name);
+//            TestEnvironment.QueryToListView(TestEnvironmentsListView, "SELECT id, name, external_id FROM environment" + filter_clause + " LIMIT " + num_records_per_page + ";", project.schema_name);
             TextBlock.ClearNoError(StatusBarText);
 
             // refresh the Iterations listview
             TextBlock.Update(StatusBarText, "Please Wait. Getting iterations ...");
-            TestEnvironment.QueryToListView(IterationsListView, "SELECT id, name, external_id FROM iteration" + filter_clause + " LIMIT " + num_records_per_page + ";", project.schema_name);
+            TestEnvironmentsListView.FromQuery<TestEnvironment>("SELECT id, name, external_id FROM iteration" + filter_clause + " LIMIT " + num_records_per_page + ";", project.schema_name);
+//            TestEnvironment.QueryToListView(IterationsListView, "SELECT id, name, external_id FROM iteration" + filter_clause + " LIMIT " + num_records_per_page + ";", project.schema_name);
             TextBlock.ClearNoError(StatusBarText);
 
             // refresh the Test Scripts listview
             TextBlock.Update(StatusBarText, "Please Wait. Getting test scripts ...");
-            TestEnvironment.QueryToListView(TestScriptsListView, "SELECT s.id, s.name, s.description, s.comment, s.external_id FROM script s" + filter_clause + " LIMIT " + num_records_per_page + ";", project.schema_name);
+            TestEnvironmentsListView.FromQuery<TestEnvironment>("SELECT s.id, s.name, s.description, s.comment, s.external_id FROM script s" + filter_clause + " LIMIT " + num_records_per_page + ";", project.schema_name);
+//            TestEnvironment.QueryToListView(TestScriptsListView, "SELECT s.id, s.name, s.description, s.comment, s.external_id FROM script s" + filter_clause + " LIMIT " + num_records_per_page + ";", project.schema_name);
             TextBlock.ClearNoError(StatusBarText);
 
 
