@@ -1,5 +1,4 @@
 ﻿
-using System.Collections.Generic;
 
 namespace SharedProject.Models
 {
@@ -13,15 +12,5 @@ namespace SharedProject.Models
         public string external_name { get; set; }
         public string webhook_url { get; set; }
         public string run_reports_url { get; set; }
-
-
-        static public List<Project> Query(string mysql_query, string db)
-        {
-            var dbConnect = new DBConnect(db);
-            var result_arr = dbConnect.Select<Project>(mysql_query);
-            return result_arr;
-        }
-
-
     }
 }
