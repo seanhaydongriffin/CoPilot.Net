@@ -18,6 +18,8 @@ namespace SharedProject
         private string _database;
         private string uid;
         private string password;
+        private static string connectionString = "";
+        private static string lastConnectionString = "";
 
         //Constructor
         public DBConnect(string database)
@@ -33,10 +35,9 @@ namespace SharedProject
             //database =                                                            // "control_automation_machine";
             uid = AppConfig.Get("DatabaseUsername");                                // "auto";
             password = StringCipher.Decrypt(AppConfig.Get("DatabasePassword"));     // "janison";
-            string connectionString = "SERVER=" + server + ";" + "DATABASE=" + _database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
-            Log.Debug("connectionString = " + connectionString);
+            connectionString = "SERVER=" + server + ";" + "DATABASE=" + _database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
             connection = new MySqlConnection(connectionString);
-            Log.Debug("connection.State.ToString() = " + connection.State.ToString());
+            //Log.Debug("connection.State.ToString() = " + connection.State.ToString());
         }
 
         //open connection to database
@@ -44,9 +45,9 @@ namespace SharedProject
         {
             try
             {
-                Log.Debug("connection.Open()");
+                //Log.Debug("connection.Open()");
                 connection.Open();
-                Log.Debug("connection.State.ToString() = " + connection.State.ToString());
+                //Log.Debug("connection.State.ToString() = " + connection.State.ToString());
                 return true;
             }
             catch (MySqlException ex)
@@ -62,13 +63,13 @@ namespace SharedProject
                 switch (ex.Number)
                 {
                     case 0:
-                        var msg = "Error. Cannot connect to server.  Contact administrator";
+                        var msg = "Error opening DB connection. Cannot connect to server.  Contact administrator";
                         Log.Debug(msg);
                         //App.CurrentStatusBarText.Text = msg;
                         break;
 
                     case 1045:
-                        var msg2 = "Error. Invalid username/password, please try again";
+                        var msg2 = "Error opening DB connection. Invalid username/password, please try again";
                         Log.Debug(msg2);
                         //App.CurrentStatusBarText.Text = msg2;
                         break;
@@ -82,25 +83,38 @@ namespace SharedProject
         {
             try
             {
-                Log.Debug("connection.Open()");
+                //Log.Debug("connection.Open()");
                 connection.Close();
-                Log.Debug("connection.State.ToString() = " + connection.State.ToString());
+                //Log.Debug("connection.State.ToString() = " + connection.State.ToString());
                 return true;
             }
             catch (MySqlException ex)
             {
+                var msg = "Error closing DB connection.";
+                Log.Debug(msg);
                 Log.Debug(ex.Message);
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
                 return false;
             }
         }
 
         //Insert statement
-        public long Insert(string query)
+        public long Insert(string query, bool logging = true)
         {
             long LastInsertedId = -1;
 
-            Log.Debug("DBConnect.Insert(\"" + query + "\"");
+            if (!connectionString.Equals(lastConnectionString))
+            {
+                if (logging)
+
+                    Log.Debug("DB connection string currently " + connectionString);
+
+                lastConnectionString = connectionString;
+            }
+
+            if (logging)
+
+                Log.Debug("Calling DBConnect.Insert(\"" + query + "\"");
 
             //open connection
             if (this.OpenConnection() == true)
@@ -121,11 +135,22 @@ namespace SharedProject
         }
 
         //Insert statement with parameterisation
-        public long Insert(string query, Hashtable parameters)
+        public long Insert(string query, Hashtable parameters, bool logging = true)
         {
             long LastInsertedId = -1;
 
-            Log.Debug("DBConnect.Insert(\"" + query + "\"");
+            if (!connectionString.Equals(lastConnectionString))
+            {
+                if (logging)
+
+                    Log.Debug("DB connection string currently " + connectionString);
+
+                lastConnectionString = connectionString;
+            }
+
+            if (logging)
+
+                Log.Debug("Calling DBConnect.Insert(\"" + query + "\"");
 
             //open connection
             if (this.OpenConnection() == true)
@@ -151,9 +176,20 @@ namespace SharedProject
         }
 
         //Update statement
-        public bool Update(string query)
+        public bool Update(string query, bool logging = true)
         {
-            Log.Debug("DBConnect.Update(\"" + query + "\"");
+            if (!connectionString.Equals(lastConnectionString))
+            {
+                if (logging)
+
+                    Log.Debug("DB connection string currently " + connectionString);
+
+                lastConnectionString = connectionString;
+            }
+
+            if (logging)
+
+                Log.Debug("Calling DBConnect.Update(\"" + query + "\"");
 
             //Open connection
             if (this.OpenConnection() == true)
@@ -178,9 +214,20 @@ namespace SharedProject
         }
 
         //Update statement with parameterisation
-        public void Update(string query, Hashtable parameters)
+        public void Update(string query, Hashtable parameters, bool logging = true)
         {
-            Log.Debug("DBConnect.Update(\"" + query + "\"");
+            if (!connectionString.Equals(lastConnectionString))
+            {
+                if (logging)
+
+                    Log.Debug("DB connection string currently " + connectionString);
+
+                lastConnectionString = connectionString;
+            }
+
+            if (logging)
+
+                Log.Debug("Calling DBConnect.Update(\"" + query + "\"");
 
             //Open connection
             if (this.OpenConnection() == true)
@@ -209,9 +256,20 @@ namespace SharedProject
         }
 
         //Delete statement
-        public bool Optimize(string query)
+        public bool Optimize(string query, bool logging = true)
         {
-            Log.Debug("DBConnect.Optimize(\"" + query + "\"");
+            if (!connectionString.Equals(lastConnectionString))
+            {
+                if (logging)
+
+                    Log.Debug("DB connection string currently " + connectionString);
+
+                lastConnectionString = connectionString;
+            }
+
+            if (logging)
+
+                Log.Debug("Calling DBConnect.Optimize(\"" + query + "\"");
 
             if (this.OpenConnection() == true)
             {
@@ -225,9 +283,20 @@ namespace SharedProject
         }
 
         //Delete statement
-        public bool Delete(string query)
+        public bool Delete(string query, bool logging = true)
         {
-            Log.Debug("DBConnect.Delete(\"" + query + "\"");
+            if (!connectionString.Equals(lastConnectionString))
+            {
+                if (logging)
+
+                    Log.Debug("DB connection string currently " + connectionString);
+
+                lastConnectionString = connectionString;
+            }
+
+            if (logging)
+
+                Log.Debug("Calling DBConnect.Delete(\"" + query + "\"");
 
             if (this.OpenConnection() == true)
             {
@@ -241,9 +310,20 @@ namespace SharedProject
         }
 
         //Delete statement with parameterisation
-        public void Delete(string query, Hashtable parameters)
+        public void Delete(string query, Hashtable parameters, bool logging = true)
         {
-            Log.Debug("DBConnect.Delete(\"" + query + "\"");
+            if (!connectionString.Equals(lastConnectionString))
+            {
+                if (logging)
+
+                    Log.Debug("DB connection string currently " + connectionString);
+
+                lastConnectionString = connectionString;
+            }
+
+            if (logging)
+
+                Log.Debug("Calling DBConnect.Delete(\"" + query + "\"");
 
             if (this.OpenConnection() == true)
             {
@@ -260,9 +340,20 @@ namespace SharedProject
         }
 
 
-        public List<T> Select<T>(string query) where T : new()
+        public List<T> Select<T>(string query, bool logging = true) where T : new()
         {
-            Log.Debug("DBConnect.Select(\"" + query + "\")");
+            if (!connectionString.Equals(lastConnectionString))
+            {
+                if (logging)
+
+                    Log.Debug("DB connection string currently " + connectionString);
+
+                lastConnectionString = connectionString;
+            }
+
+            if (logging)
+
+                Log.Debug("Calling DBConnect.Select(\"" + query + "\")");
 
             List<T> res = new List<T>();
 
@@ -303,9 +394,20 @@ namespace SharedProject
 
 
 
-        public List<T> Select<T>(string query, Hashtable parameters) where T : new()
+        public List<T> Select<T>(string query, Hashtable parameters, bool logging = true) where T : new()
         {
-            Log.Debug("DBConnect.Select(\"" + query + "\")");
+            if (!connectionString.Equals(lastConnectionString))
+            {
+                if (logging)
+
+                    Log.Debug("DB connection string currently " + connectionString);
+
+                lastConnectionString = connectionString;
+            }
+
+            if (logging)
+
+                Log.Debug("Calling DBConnect.Select(\"" + query + "\")");
 
             List<T> res = new List<T>();
 
@@ -352,9 +454,20 @@ namespace SharedProject
 
 
 
-        public ObservableCollection<T> SelectToObservableCollection<T>(string query) where T : new()
+        public ObservableCollection<T> SelectToObservableCollection<T>(string query, bool logging = true) where T : new()
         {
-            Log.Debug("DBConnect.Select(\"" + query + "\"");
+            if (!connectionString.Equals(lastConnectionString))
+            {
+                if (logging)
+
+                    Log.Debug("DB connection string currently " + connectionString);
+
+                lastConnectionString = connectionString;
+            }
+
+            if (logging)
+
+                Log.Debug("Calling DBConnect.Select(\"" + query + "\"");
 
             ObservableCollection<T> res = new ObservableCollection<T>();
 
@@ -394,9 +507,20 @@ namespace SharedProject
         }
 
 
-        public ObservableCollection<T> SelectToObservableCollection<T>(string query, Hashtable parameters) where T : new()
+        public ObservableCollection<T> SelectToObservableCollection<T>(string query, Hashtable parameters, bool logging = true) where T : new()
         {
-            Log.Debug("DBConnect.Select(\"" + query + "\"");
+            if (!connectionString.Equals(lastConnectionString))
+            {
+                if (logging)
+
+                    Log.Debug("DB connection string currently " + connectionString);
+
+                lastConnectionString = connectionString;
+            }
+
+            if (logging)
+
+                Log.Debug("Calling DBConnect.Select(\"" + query + "\"");
 
             ObservableCollection<T> res = new ObservableCollection<T>();
 
@@ -440,6 +564,16 @@ namespace SharedProject
             return res;
 
         }
+
+        public List<T> Query<T>(string mysql_query, string db) where T : new()
+        {
+            var dbConnect = new DBConnect(db);
+            var result_arr = dbConnect.Select<T>(mysql_query);
+            return result_arr;
+        }
+
+
+
 
 
         //Select statement
@@ -620,7 +754,7 @@ namespace SharedProject
             }
             catch (IOException ex)
             {
-                MessageBox.Show("Error , unable to backup!");
+                //MessageBox.Show("Error , unable to backup!");
             }
         }
 
