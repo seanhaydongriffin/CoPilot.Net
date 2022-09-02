@@ -47,7 +47,8 @@ namespace ExecutionGroupCreateUpdate
             ProjectIDTextBox.Text = App.project_id;
 
             TextBlock.Update(StatusBarText, "Please Wait. Getting project ...");
-            project = Project.Query("SELECT path, external_id, external_name FROM project WHERE id = " + App.project_id + ";", "control_automation_machine");
+            var dbConnect = new DBConnect("control_automation_machine");
+            project = dbConnect.Select<Project>("SELECT path, external_id, external_name FROM project WHERE id = " + App.project_id + ";");
             TextBlock.ClearNoError(StatusBarText);
 
             ProjectPathTextBox.Text = project[0].path;
@@ -57,8 +58,8 @@ namespace ExecutionGroupCreateUpdate
             ScriptsListViewCollection = new ObservableCollection<ExecutionGroupScript>();
 
             TextBlock.Update(StatusBarText, "Please Wait. Getting machines ...");
-            var dbConnect = new DBConnect("control_automation_machine");
-            machines = dbConnect.Select<Machine>("SELECT host_name FROM machine WHERE archived = 0 ORDER BY host_name;");
+            var dbConnect3 = new DBConnect("control_automation_machine");
+            machines = dbConnect3.Select<Machine>("SELECT host_name FROM machine WHERE archived = 0 ORDER BY host_name;");
             TextBlock.ClearNoError(StatusBarText);
 
             if (App.execution_group_id.ToInt() == 0)
@@ -74,7 +75,8 @@ namespace ExecutionGroupCreateUpdate
                 ExeGrpIDTextBox.Text = App.execution_group_id;
 
                 TextBlock.Update(StatusBarText, "Please Wait. Getting execution group ...");
-                execution_group = ExecutionGroup.Query("SELECT eg.name, eg.iteration_id, i.name AS iteration_name, eg.environment_id, e.name AS environment_name, eg.auto_stop_tests, eg.auto_send_results, eg.device_notifications, eg.external_plan_id, eg.external_plan_name, eg.external_exe_rec_run_id, eg.external_exe_rec_run_name FROM execution_group eg, iteration i, environment e WHERE eg.iteration_id = i.id AND eg.environment_id = e.id AND eg.id = " + App.execution_group_id + ";", App.schema_name);
+                var dbConnect2 = new DBConnect(App.schema_name);
+                execution_group = dbConnect2.Select<ExecutionGroup>("SELECT eg.name, eg.iteration_id, i.name AS iteration_name, eg.environment_id, e.name AS environment_name, eg.auto_stop_tests, eg.auto_send_results, eg.device_notifications, eg.external_plan_id, eg.external_plan_name, eg.external_exe_rec_run_id, eg.external_exe_rec_run_name FROM execution_group eg, iteration i, environment e WHERE eg.iteration_id = i.id AND eg.environment_id = e.id AND eg.id = " + App.execution_group_id + ";");
                 TextBlock.ClearNoError(StatusBarText);
 
                 ExeGrpNameTextBox.Text = execution_group[0].name;
@@ -111,7 +113,7 @@ namespace ExecutionGroupCreateUpdate
             TextBlock.Update(StatusBarText, "Please Wait. Getting execution group scripts ...");
             var dbConnect = new DBConnect(db);
 //            Main.ScriptsListViewCollection = dbConnect.SelectToObservableCollection<ExecutionGroupScript>("SELECT egs.id, m.host_name, egs.script_id, s.name AS script_name, egs.selector, egs.post_run_delay, egs.state, egs.excluded, egs.end_date_time, egs.em_comment, egs.shared_folder_1, egs.order_id FROM execution_group_script egs, script s, control_automation_machine.machine m WHERE egs.script_id = s.id AND egs.machine_id = m.id AND egs.execution_group_id = " + execution_group_id + " ORDER BY egs.order_id ASC;");
-            Main.ScriptsListViewCollection = dbConnect.SelectToObservableCollection<ExecutionGroupScript>("SELECT egs.id, m.host_name, egs.script_id, s.name AS script_name, egs.selector, egs.post_run_delay, egs.state, egs.excluded, egs.end_date_time, egs.em_comment, egs.shared_folder_1, egs.order_id FROM execution_group_script egs, script s, control_automation_machine.machine m WHERE egs.script_id = s.id AND egs.machine_id = m.id AND egs.execution_group_id = ?execution_group_id ORDER BY egs.order_id ASC;", new Hashtable {
+            Main.ScriptsListViewCollection = dbConnect.SelectToObservableCollection<ExecutionGroupScript>("SELECT egs.id, m.host_name, egs.script_id, s.name AS script_name, egs.selector, egs.post_run_delay, egs.state, egs.excluded, egs.end_date_time, egs.em_comment, egs.shared_folder_1, egs.elevated, egs.order_id FROM execution_group_script egs, script s, control_automation_machine.machine m WHERE egs.script_id = s.id AND egs.machine_id = m.id AND egs.execution_group_id = ?execution_group_id ORDER BY egs.order_id ASC;", new Hashtable {
                 { "?execution_group_id",                 execution_group_id }
             });
             TextBlock.ClearNoError(StatusBarText);
@@ -123,6 +125,10 @@ namespace ExecutionGroupCreateUpdate
                 if (eachItem.excluded == false)
 
                     eachItem.excluded = null;
+
+                if (eachItem.elevated == false)
+
+                    eachItem.elevated = null;
             }
 
             // deep copy of ScriptsListViewCollection once populated from the database
@@ -243,7 +249,7 @@ namespace ExecutionGroupCreateUpdate
 
                     TextBlock.Update(StatusBarText, "Please Wait. Creating execution group ...");
 //                    dbConnect.Insert("INSERT INTO execution_group_script (execution_group_id, order_id, script_id, machine_id, selector, post_run_delay, excluded, em_comment, shared_folder_1) VALUES (" + execution_group_id + ", " + script_index + ", " + eachItem.script_id + ", " + machines[0].id + ", '" + eachItem.selector + "', '" + eachItem.post_run_delay + "', " + (eachItem.excluded == true ? 1 : 0) + ", '', '" + eachItem.shared_folder_1 + "');");
-                    dbConnect.Insert("INSERT INTO execution_group_script (execution_group_id, order_id, script_id, machine_id, selector, post_run_delay, excluded, em_comment, shared_folder_1) VALUES (?execution_group_id, ?order_id, ?script_id, ?machine_id, ?selector, ?post_run_delay, ?excluded, ?em_comment, ?shared_folder_1);", new Hashtable {
+                    dbConnect.Insert("INSERT INTO execution_group_script (execution_group_id, order_id, script_id, machine_id, selector, post_run_delay, excluded, em_comment, shared_folder_1, elevated) VALUES (?execution_group_id, ?order_id, ?script_id, ?machine_id, ?selector, ?post_run_delay, ?excluded, ?em_comment, ?shared_folder_1, ?elevated);", new Hashtable {
                         { "?execution_group_id",    execution_group_id },
                         { "?order_id",              script_index },
                         { "?script_id",             eachItem.script_id },
@@ -252,7 +258,8 @@ namespace ExecutionGroupCreateUpdate
                         { "?post_run_delay",        eachItem.post_run_delay },
                         { "?excluded",              (eachItem.excluded == true ? 1 : 0) },
                         { "?em_comment",            "" },
-                        { "?shared_folder_1",       eachItem.shared_folder_1 }
+                        { "?shared_folder_1",       eachItem.shared_folder_1 },
+                        { "?elevated",              (eachItem.elevated == true ? 1 : 0) }
                     });
                     TextBlock.ClearNoError(StatusBarText);
 
@@ -340,7 +347,7 @@ namespace ExecutionGroupCreateUpdate
                             // insert a new script (to the database)
                             TextBlock.Update(StatusBarText, "Please Wait. inserting script with id " + Main.ScriptsListViewCollection[i].script_id + " ...");
 //                            dbConnect.Insert("INSERT INTO execution_group_script (execution_group_id, order_id, script_id, machine_id, selector, post_run_delay, state, excluded, em_comment, shared_folder_1) VALUES (" + App.execution_group_id + ", " + (i + 1) + ", " + Main.ScriptsListViewCollection[i].script_id + ", " + machines[0].id + ", '" + Main.ScriptsListViewCollection[i].selector + "', '" + Main.ScriptsListViewCollection[i].post_run_delay + "', '', '" + (Main.ScriptsListViewCollection[i].excluded == true ? 1 : 0) + "', '" + Main.ScriptsListViewCollection[i].em_comment + "', '" + Main.ScriptsListViewCollection[i].shared_folder_1 + "');");
-                            dbConnect.Insert("INSERT INTO execution_group_script (execution_group_id, order_id, script_id, machine_id, selector, post_run_delay, state, excluded, em_comment, shared_folder_1) VALUES (" + App.execution_group_id + ", " + (i + 1) + ", " + Main.ScriptsListViewCollection[i].script_id + ", " + machines[0].id + ", '" + Main.ScriptsListViewCollection[i].selector + "', '" + Main.ScriptsListViewCollection[i].post_run_delay + "', '', '" + (Main.ScriptsListViewCollection[i].excluded == true ? 1 : 0) + "', '" + Main.ScriptsListViewCollection[i].em_comment + "', '" + Main.ScriptsListViewCollection[i].shared_folder_1 + "');", new Hashtable {
+                            dbConnect.Insert("INSERT INTO execution_group_script (execution_group_id, order_id, script_id, machine_id, selector, post_run_delay, state, excluded, em_comment, shared_folder_1, elevated) VALUES (" + App.execution_group_id + ", " + (i + 1) + ", " + Main.ScriptsListViewCollection[i].script_id + ", " + machines[0].id + ", '" + Main.ScriptsListViewCollection[i].selector + "', '" + Main.ScriptsListViewCollection[i].post_run_delay + "', '', '" + (Main.ScriptsListViewCollection[i].excluded == true ? 1 : 0) + "', '" + Main.ScriptsListViewCollection[i].em_comment + "', '" + Main.ScriptsListViewCollection[i].shared_folder_1 + "', '" + (Main.ScriptsListViewCollection[i].elevated == true ? 1 : 0) + "');", new Hashtable {
                                 { "?execution_group_id",    App.execution_group_id },
                                 { "?order_id",              (i + 1) },
                                 { "?script_id",             Main.ScriptsListViewCollection[i].script_id },
@@ -350,7 +357,8 @@ namespace ExecutionGroupCreateUpdate
                                 { "?state",                 "" },
                                 { "?excluded",              (Main.ScriptsListViewCollection[i].excluded == true ? 1 : 0) },
                                 { "?em_comment",            Main.ScriptsListViewCollection[i].em_comment },
-                                { "?shared_folder_1",       Main.ScriptsListViewCollection[i].shared_folder_1 }
+                                { "?shared_folder_1",       Main.ScriptsListViewCollection[i].shared_folder_1 },
+                                { "?elevated",              (Main.ScriptsListViewCollection[i].elevated == true ? 1 : 0) }
                             });
 
                             TextBlock.ClearNoError(StatusBarText);
@@ -360,7 +368,7 @@ namespace ExecutionGroupCreateUpdate
                             // update to an existing script (from the database)
                             TextBlock.Update(StatusBarText, "Please Wait. updating execution group script id " + Main.ScriptsListViewCollection[i].id + " ...");
 //                            dbConnect.Update("UPDATE execution_group_script SET order_id = " + (i + 1) + ", machine_id = " + machines[0].id + ", selector = '" + Main.ScriptsListViewCollection[i].selector + "', post_run_delay = '" + Main.ScriptsListViewCollection[i].post_run_delay + "', state = '" + Main.ScriptsListViewCollection[i].state + "', excluded = " + (Main.ScriptsListViewCollection[i].excluded == true ? 1 : 0) + ", em_comment = '" + Main.ScriptsListViewCollection[i].em_comment + "', shared_folder_1 = '" + Main.ScriptsListViewCollection[i].shared_folder_1 + "' WHERE id = " + Main.ScriptsListViewCollection[i].id + ";");
-                            dbConnect.Update("UPDATE execution_group_script SET order_id = ?order_id, machine_id = ?machine_id, selector = ?selector, post_run_delay = ?post_run_delay, state = ?state, excluded = ?excluded, em_comment = ?em_comment, shared_folder_1 = ?shared_folder_1 WHERE id = ?id;", new Hashtable {
+                            dbConnect.Update("UPDATE execution_group_script SET order_id = ?order_id, machine_id = ?machine_id, selector = ?selector, post_run_delay = ?post_run_delay, state = ?state, excluded = ?excluded, em_comment = ?em_comment, shared_folder_1 = ?shared_folder_1, elevated = ?elevated WHERE id = ?id;", new Hashtable {
                                 { "?order_id",              (i + 1) },
                                 { "?machine_id",            machines[0].id },
                                 { "?selector",              Main.ScriptsListViewCollection[i].selector },
@@ -369,6 +377,7 @@ namespace ExecutionGroupCreateUpdate
                                 { "?excluded",              (Main.ScriptsListViewCollection[i].excluded == true ? 1 : 0) },
                                 { "?em_comment",            Main.ScriptsListViewCollection[i].em_comment },
                                 { "?shared_folder_1",       Main.ScriptsListViewCollection[i].shared_folder_1 },
+                                { "?elevated",              (Main.ScriptsListViewCollection[i].elevated == true ? 1 : 0) },
                                 { "?id",                    Main.ScriptsListViewCollection[i].id }
                             });
 
@@ -416,6 +425,29 @@ namespace ExecutionGroupCreateUpdate
                     else
 
                         ((ExecutionGroupScript)item).excluded = null;
+
+                    ((ExecutionGroupScript)item).order_id = -1;
+                }
+
+                ScriptsListView.Items.Refresh();
+                ScriptsListView.Focus();
+            }
+        }
+
+        private void ElevateButton_Click(object sender, RoutedEventArgs e)
+        {
+            var items = ScriptsListView.SelectedItems;
+
+            if (items.Count > 0)
+            {
+                foreach (var item in items)
+                {
+                    if (((ExecutionGroupScript)item).elevated == null || ((ExecutionGroupScript)item).elevated == false)
+
+                        ((ExecutionGroupScript)item).elevated = true;
+                    else
+
+                        ((ExecutionGroupScript)item).elevated = null;
 
                     ((ExecutionGroupScript)item).order_id = -1;
                 }

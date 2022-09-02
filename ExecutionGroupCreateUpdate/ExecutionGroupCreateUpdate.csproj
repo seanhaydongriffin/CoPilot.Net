@@ -240,7 +240,11 @@
   <ItemGroup>
     <Resource Include="data\not_run_small.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="data\up_small.jpg" />
+  </ItemGroup>
   <Import Project="..\SharedProject\SharedProject.projitems" Label="Shared" />
+  <Import Project="..\SharedProjectWpf\SharedProjectWpf.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
