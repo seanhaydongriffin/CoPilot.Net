@@ -16,6 +16,7 @@ using RoboSharp;
 using SharedProject.TestRail;
 using SharedProject;
 using SharedProject.Models;
+using System.Globalization;
 
 namespace RunExecutionGroup
 {
@@ -44,6 +45,7 @@ namespace RunExecutionGroup
         bool close_gui = false;
         string solution_name = "";
         string project_name = "";
+        DateTime start_date_time = DateTime.Now;
 
         public Main()
         {
@@ -91,7 +93,7 @@ namespace RunExecutionGroup
         {
             ///StatusBarSetText("Please Wait. Getting execution group scripts ...");
             dbConnect = new DBConnect(db);
-            Main.ScriptsListViewCollection = dbConnect.SelectToObservableCollection<ExecutionGroupScript>("SELECT egs.id, m.host_name, egs.script_id, s.name AS script_name, egs.selector, egs.post_run_delay, egs.state, egs.excluded, egs.end_date_time, egs.em_comment, egs.shared_folder_1, egs.order_id FROM execution_group_script egs, script s, control_automation_machine.machine m WHERE egs.script_id = s.id AND egs.machine_id = m.id AND egs.execution_group_id = " + execution_group_id + " ORDER BY egs.order_id ASC;");
+            Main.ScriptsListViewCollection = dbConnect.SelectToObservableCollection<ExecutionGroupScript>("SELECT egs.id, m.host_name, egs.script_id, s.name AS script_name, egs.selector, egs.post_run_delay, egs.state, egs.excluded, egs.start_date_time, egs.end_date_time, egs.em_comment, egs.shared_folder_1, egs.order_id FROM execution_group_script egs, script s, control_automation_machine.machine m WHERE egs.script_id = s.id AND egs.machine_id = m.id AND egs.execution_group_id = " + execution_group_id + " ORDER BY egs.order_id ASC;");
             //StatusBarSetText("");
             //lv.ItemsSource = null;
             //lv.ItemsSource = execution_schedule_line;
@@ -128,7 +130,8 @@ namespace RunExecutionGroup
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => { })).Wait();
 
                 StatusBarSetText("Please Wait. Getting project ...");
-                project = Project.Query("SELECT schema_name, path, external_id, external_name, webhook_url, run_reports_url FROM project WHERE id = " + App.project_id + ";", "control_automation_machine");
+                var dbConnect = new DBConnect("control_automation_machine");
+                project = dbConnect.Select<Project>("SELECT schema_name, path, external_id, external_name, webhook_url, run_reports_url FROM project WHERE id = " + App.project_id + ";");
                 StatusBarSetText("");
 
                 solution_name = project[0].path.Substring(0, project[0].path.LastIndexOf("\\")).Substring(project[0].path.IndexOf("\\") + 1);
@@ -144,7 +147,8 @@ namespace RunExecutionGroup
                 });
 
                 StatusBarSetText("Please Wait. Getting execution group ...");
-                execution_group = ExecutionGroup.Query("SELECT eg.name, eg.iteration_id, i.name AS iteration_name, eg.environment_id, e.name AS environment_name, eg.auto_stop_tests, eg.auto_send_results, eg.device_notifications, eg.external_plan_id, eg.external_plan_name, eg.external_exe_rec_run_id, eg.external_exe_rec_run_name FROM execution_group eg, iteration i, environment e WHERE eg.iteration_id = i.id AND eg.environment_id = e.id AND eg.id = " + App.execution_group_id + ";", project[0].schema_name);
+                dbConnect = new DBConnect(project[0].schema_name);
+                execution_group = dbConnect.Select<ExecutionGroup>("SELECT eg.name, eg.iteration_id, i.name AS iteration_name, eg.environment_id, e.name AS environment_name, eg.auto_stop_tests, eg.auto_send_results, eg.device_notifications, eg.external_plan_id, eg.external_plan_name, eg.external_exe_rec_run_id, eg.external_exe_rec_run_name FROM execution_group eg, iteration i, environment e WHERE eg.iteration_id = i.id AND eg.environment_id = e.id AND eg.id = " + App.execution_group_id + ";");
                 StatusBarSetText("");
 
                 // render the following GUI controls immediately (via Dispatcher)
@@ -171,11 +175,13 @@ namespace RunExecutionGroup
                 foreach (var eachItem in ScriptsListViewCollection)
                 {
                     eachItem.state = "Not Run";
+                    eachItem.start_date_time = null;
+                    eachItem.end_date_time = null;
                 }
 
                 //            StatusBarSetText("Please Wait. Updating all scripts in the execution group to 'Not Run'");
                 dbConnect = new DBConnect(project[0].schema_name);
-                dbConnect.Update("UPDATE execution_group_script SET state = 'Not Run' WHERE execution_group_id = '" + App.execution_group_id + "' AND excluded = 0;");
+                dbConnect.Update("UPDATE execution_group_script SET state = 'Not Run', start_date_time = NULL, end_date_time = NULL WHERE execution_group_id = '" + App.execution_group_id + "' AND excluded = 0;");
                 //          StatusBarSetText("");
 
                 // if deploy and build is required
@@ -292,6 +298,7 @@ namespace RunExecutionGroup
                             }
 
                             eachItem.state = "Not Run";
+                            eachItem.end_date_time = null;
 
                             // refresh the scripts listview
                             Dispatcher.Invoke((Action)delegate () { ScriptsListView.Items.Refresh(); });
@@ -363,7 +370,7 @@ namespace RunExecutionGroup
 
                             if (tmp_test_case_state.Contains("") || tmp_test_case_state.Contains("Not Run") || tmp_test_case_state.Contains("In Progress"))
 
-                            test_case_state = "Incomplete Automation";
+                                test_case_state = "Incomplete Automation";
 
                         // MS Teams Results
 
@@ -594,6 +601,7 @@ namespace RunExecutionGroup
                                 if (machine.source_control_args.ToInt() == 0)
                                 {
                                     eachItem.state = "Not Run";
+                                    eachItem.end_date_time = null;
                                 }
                                 else
                                 {
@@ -661,13 +669,15 @@ namespace RunExecutionGroup
                         {
                             StatusBarSetText("Please Wait. Getting execution group scripts ...");
                             dbConnect = new DBConnect(project[0].schema_name);
-                            var scripts = dbConnect.Select<ExecutionGroupScript>("SELECT id, state FROM execution_group_script WHERE id IN (" + execution_group_script_ids_in_progress + ");");
+                            var scripts = dbConnect.Select<ExecutionGroupScript>("SELECT id, state, start_date_time, end_date_time FROM execution_group_script WHERE id IN (" + execution_group_script_ids_in_progress + ");");
                             //ScriptsListView.ItemsSource = scripts;
                             StatusBarSetText("");
 
                             foreach (var each in scripts)
                             {
                                 ScriptsListViewCollection.Single(x => x.id == each.id).state = each.state;
+                                ScriptsListViewCollection.Single(x => x.id == each.id).start_date_time = each.start_date_time;
+                                ScriptsListViewCollection.Single(x => x.id == each.id).end_date_time = each.end_date_time;
                             }
 
                         }
@@ -702,10 +712,13 @@ namespace RunExecutionGroup
                                             else
                                             {
                                                 StatusBarSetText("Please Wait. Updating execution group script " + ScriptsListViewCollection[i].id + " to 'In Progress'");
+                                                var now = DateTime.Now;
                                                 dbConnect = new DBConnect(project[0].schema_name);
+//                                                dbConnect.Update("UPDATE execution_group_script SET state = 'In Progress', start_date_time = '" + now.ToString("yyyy-MM-dd HH:mm:ss") + "', end_date_time = NULL WHERE id = " + ScriptsListViewCollection[i].id + ";");
                                                 dbConnect.Update("UPDATE execution_group_script SET state = 'In Progress' WHERE id = " + ScriptsListViewCollection[i].id + ";");
                                                 StatusBarSetText("");
                                                 ScriptsListViewCollection.Single(x => x.id == ScriptsListViewCollection[i].id).state = "In Progress";
+                                                //ScriptsListViewCollection.Single(x => x.id == ScriptsListViewCollection[i].id).start_date_time = now;
 
                                                 // add the run to the machine
 
@@ -748,14 +761,16 @@ namespace RunExecutionGroup
                                         //    run_ids = run_ids + "," + eachItem.id + "," + eachItem.post_run_delay + ",100,1";
 
                                         StatusBarSetText("Please Wait. Updating execution group script " + ScriptsListViewCollection[i].id + " to 'In Progress'");
+                                        var now = DateTime.Now;
                                         dbConnect = new DBConnect(project[0].schema_name);
-                                        dbConnect.Update("UPDATE execution_group_script SET state = 'In Progress' WHERE id = " + ScriptsListViewCollection[i].id + ";");
+                                        dbConnect.Update("UPDATE execution_group_script SET state = 'In Progress', start_date_time = '" + now.ToString("yyyy-MM-dd HH:mm:ss") + "' WHERE id = " + ScriptsListViewCollection[i].id + ";");
                                         StatusBarSetText("");
                                         ScriptsListViewCollection.Single(x => x.id == ScriptsListViewCollection[i].id).state = "In Progress";
+                                        ScriptsListViewCollection.Single(x => x.id == ScriptsListViewCollection[i].id).start_date_time = now;
 
-                                        // add the run to the machine
+                                    // add the run to the machine
 
-                                        var execution_group_first_run = 0;
+                                    var execution_group_first_run = 0;
 
                                         if (!machine_list.Exists(x => x.host_name == ScriptsListViewCollection[i].host_name))
                                         {
@@ -836,7 +851,7 @@ namespace RunExecutionGroup
 
                             StatusBarSetText("Please Wait. Updating execution group " + App.execution_group_id + " ...");
                             dbConnect = new DBConnect(project[0].schema_name);
-                            dbConnect.Update("UPDATE execution_group SET end_date_time = '" + execution_group[0].end_date_time.ToString("yyyy-MM-dd HH:mm:ss") + "', result = '" + tmp_overall_status + "' WHERE id = " + App.execution_group_id + ";");
+                            dbConnect.Update("UPDATE execution_group SET start_date_time = '" + start_date_time.ToString("yyyy-MM-dd HH:mm:ss") + "', end_date_time = '" + execution_group[0].end_date_time.ToString("yyyy-MM-dd HH:mm:ss") + "', result = '" + tmp_overall_status + "' WHERE id = " + App.execution_group_id + ";");
                             StatusBarSetText("");
 
                             //cleanup();
