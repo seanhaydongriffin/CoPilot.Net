@@ -40,7 +40,8 @@ namespace AutomationAdapter
         private string device_notification_api_key = "";
         private System.Threading.Timer timer;
         private int msbuild_exit_code = 0;
-        private string msbuild_path = "C:\\Program Files (x86)\\MSBuild\\14.0\\Bin";
+        //private string msbuild_path = "C:\\Program Files (x86)\\MSBuild\\14.0\\Bin";                                                          // C# v6
+        private string msbuild_path = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\MSBuild\\15.0\\Bin\\MSBuild.exe";    // C# v7
         public static TextBlock statusbar;
 
         // Handlers for events that will update GUI controls in realtime (in background threads) ...
@@ -83,11 +84,15 @@ namespace AutomationAdapter
 
             if (!System.IO.Directory.Exists(msbuild_path))
             {
-                msbuild_path = "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319";
+                msbuild_path = "C:\\Program Files (x86)\\MSBuild\\14.0\\Bin";
 
                 if (!System.IO.Directory.Exists(msbuild_path))
 
-                    msbuild_path = "C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319";
+                    msbuild_path = "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319";
+
+                    if (!System.IO.Directory.Exists(msbuild_path))
+
+                        msbuild_path = "C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319";
             }
 
             // Check if running as administrator
@@ -940,7 +945,8 @@ namespace AutomationAdapter
 
                     LogMessage("Deleting " + extra_video_target_path + "\\Run_1_" + script_name_short + "_*.mp4");
                     File.delete(extra_video_target_path, "Run_1_" + script_name_short + "_*.mp4");
-                    File.RoboCopy(MessagesTextBox, extra_video_source_path, extra_video_target_path, extra_video_filename);
+//                    File.RoboCopy(MessagesTextBox, extra_video_source_path, extra_video_target_path, extra_video_filename);
+                    File.RoboCopy(extra_video_source_path, extra_video_target_path, extra_video_filename);
                 }
 
                 // send iOS push notification
