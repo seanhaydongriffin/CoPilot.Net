@@ -1,4 +1,4 @@
-;!include nsDialogs.nsh
+!include nsDialogs.nsh
 !include LogicLib.nsh
 
 
@@ -31,7 +31,68 @@ RequestExecutionLevel admin
 ; Pages
 
 Page directory
+Page custom nsDialogsPage nsDialogsPageLeave
 Page instfiles
+
+
+;--------------------------------
+
+
+Var Git_Checkbox
+Var Git_Checkbox_State
+Var Automation_Share_Checkbox
+Var Automation_Share_Checkbox_State
+Var Automation_Adapter_Checkbox
+Var Automation_Adapter_Checkbox_State
+
+Function nsDialogsPage
+	nsDialogs::Create 1018
+	Pop $0
+
+	${NSD_CreateCheckbox} 0 -110 100% 8u 'Create task "CoPilot\Git" to run substgit.bat On Logon'
+	Pop $Git_Checkbox
+
+	${NSD_CreateCheckbox} 0 -80 100% 16u 'Create task "CoPilot\Automation Share" to enforce Read+Write on the Automation share On Logon'
+	Pop $Automation_Share_Checkbox
+
+	${NSD_CreateCheckbox} 0 -40 100% 16u 'Create task "CoPilot\Automation Adapter" to run AutomationAdapter.exe On Logon'
+	Pop $Automation_Adapter_Checkbox
+
+	nsDialogs::Show
+FunctionEnd
+
+Function nsDialogsPageLeave
+
+	${NSD_GetState} $Git_Checkbox $Git_Checkbox_State
+	
+	${If} $Git_Checkbox_State == ${BST_CHECKED}
+		;MessageBox MB_OK checked!
+		ExecWait '$SYSDIR\schtasks.exe /CREATE /SC ONLOGON /TN "CoPilot\Git" /TR "C:\CoPilot.Net\substgit.bat"'
+	${EndIf}
+
+	${NSD_GetState} $Automation_Share_Checkbox $Automation_Share_Checkbox_State
+	${NSD_GetState} $Automation_Adapter_Checkbox $Automation_Adapter_Checkbox_State
+
+FunctionEnd
+
+
+Function .OnInstSuccess
+  ;	Exec "Program.EXE"
+  
+  	;MessageBox MB_OK $Automation_Share_Checkbox_State
+	
+	${If} $Automation_Share_Checkbox_State == ${BST_CHECKED}
+		;MessageBox MB_OK checked!
+		ExecWait '$SYSDIR\schtasks.exe /CREATE /SC ONLOGON /TN "CoPilot\Automation Share" /TR "C:\CoPilot.Net\SetACL.exe -on Automation -ot shr -actn ace -ace n:Everyone;p:FULL" /RL HIGHEST'
+	${EndIf}
+	
+	${If} $Automation_Adapter_Checkbox_State == ${BST_CHECKED}
+		;MessageBox MB_OK checked!
+		ExecWait '$SYSDIR\schtasks.exe /CREATE /SC ONLOGON /TN "CoPilot\Automation Adapter" /TR "C:\CoPilot.Net\AutomationAdapter.exe"'
+	${EndIf}
+  
+  
+FunctionEnd
 
 
 ;--------------------------------
@@ -68,9 +129,9 @@ Section "" ;No components page, name is not important
   File "CoPilot\bin\Release\CoPilot.exe"
   File "CoPilot\bin\Release\CoPilot.pdb"
   File "CoPilot.exe.config"
-  File "psubst.bat"
-  File "psubstgit.bat"
-  File "psubsttfs.bat"
+  File "SetACL.exe"
+  File "substgit.bat"
+  File "substdel.bat"
   File "control_automation_machine_StructureDump.sql"
   File "blank_release_1_se_project_StructureDump.sql"
   File "Settings\bin\Release\Settings.exe"
