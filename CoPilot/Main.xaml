@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CoPilot"
         mc:Ignorable="d"
-        Title="Testright CoPilot v0.7" Height="640" Width="680"
+        Title="Testright CoPilot v0.10" Height="640" Width="680"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
