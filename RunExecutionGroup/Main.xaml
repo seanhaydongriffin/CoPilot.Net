@@ -154,7 +154,10 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Date" DisplayMemberBinding="{Binding end_date_time}"/>
+                    <GridViewColumn Header="Start Date" DisplayMemberBinding="{Binding start_date_time, StringFormat='dd MMM yy HH:mm:ss'}" Width="140"/>
+                    <GridViewColumn Header="End Date" DisplayMemberBinding="{Binding end_date_time, StringFormat='dd MMM yy HH:mm:ss'}" Width="140"/>
+                    <GridViewColumn Header="Shared Folder" DisplayMemberBinding="{Binding shared_folder_1}" Width="140"/>
+                    <GridViewColumn Header="Browser" DisplayMemberBinding="{Binding browser}" Width="140"/>
                 </GridView>
             </ListView.View>
         </ListView>

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace RunExecutionGroup
 {
@@ -29,6 +23,7 @@ namespace RunExecutionGroup
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+
             if (e.Args.Length > 0)
             {
                 mysql_host = e.Args[0];

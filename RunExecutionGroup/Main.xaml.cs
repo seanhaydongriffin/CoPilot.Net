@@ -93,7 +93,7 @@ namespace RunExecutionGroup
         {
             ///StatusBarSetText("Please Wait. Getting execution group scripts ...");
             dbConnect = new DBConnect(db);
-            Main.ScriptsListViewCollection = dbConnect.SelectToObservableCollection<ExecutionGroupScript>("SELECT egs.id, m.host_name, egs.script_id, s.name AS script_name, egs.selector, egs.post_run_delay, egs.state, egs.excluded, egs.start_date_time, egs.end_date_time, egs.em_comment, egs.shared_folder_1, egs.order_id FROM execution_group_script egs, script s, control_automation_machine.machine m WHERE egs.script_id = s.id AND egs.machine_id = m.id AND egs.execution_group_id = " + execution_group_id + " ORDER BY egs.order_id ASC;");
+            Main.ScriptsListViewCollection = dbConnect.SelectToObservableCollection<ExecutionGroupScript>("SELECT egs.id, m.host_name, egs.script_id, s.name AS script_name, egs.selector, egs.post_run_delay, egs.state, egs.excluded, egs.start_date_time, egs.end_date_time, egs.em_comment, egs.shared_folder_1, egs.browser, egs.order_id FROM execution_group_script egs, script s, control_automation_machine.machine m WHERE egs.script_id = s.id AND egs.machine_id = m.id AND egs.execution_group_id = " + execution_group_id + " ORDER BY egs.order_id ASC;");
             //StatusBarSetText("");
             //lv.ItemsSource = null;
             //lv.ItemsSource = execution_schedule_line;
@@ -358,6 +358,8 @@ namespace RunExecutionGroup
 
                     foreach (var test_case_result in test_case_results)
                     {
+                        Log.Debug("Processing result for test_case_name = " + test_case_result.test_case_name);
+
                         test_case_result.test_case_name = test_case_result.test_case_name.Substring(test_case_result.test_case_name.LastIndexOf('.') + 1);
                         var tmp_test_case_state = test_case_result.test_case_states.Split(',');
 
@@ -383,48 +385,57 @@ namespace RunExecutionGroup
 
                         for (int i = 0; i < tmp_test_case_script_names.Length; i++)
                         {
-
-
                             // TestRail Results
                             dbConnect = new DBConnect(project[0].schema_name);
                             var tmp_arr = dbConnect.Select<ExecutionGroupScriptLog>("SELECT '|' AS pipe, date_time, result, text FROM execution_group_script_log WHERE execution_group_script_id = " + tmp_execution_group_script_id[i] + " AND result <> 'DEBUG' ORDER BY id ASC;");
 
-                            // Double up on any backslashes because when posting into TestRail we lose one set of backslashes
-
-                            var log_str = "";
-
-                            foreach (var each in tmp_arr)
+                            if (tmp_arr.Count > 0)
                             {
-                                if (log_str.Length > 0)
+                                // Double up on any backslashes because when posting into TestRail we lose one set of backslashes
 
-                                    log_str = log_str + "\n";
+                                var log_str = "";
 
-                                log_str = log_str + each.pipe + "|" + each.date_time + "|" + each.result + "|" + each.text.Replace("\\", "\\\\").Replace("\"\"", "\\\"\"");
+                                foreach (var each in tmp_arr)
+                                {
+                                    if (log_str.Length > 0)
+
+                                        log_str = log_str + "\n";
+
+                                    log_str = log_str + each.pipe + "|" + each.date_time + "|" + each.result + "|" + each.text.Replace("\\", "\\\\").Replace("\"\"", "\\\"\"");
+                                }
+
+                                comment = comment + "\n\n" + tmp_test_case_script_names[i] + "\n\n" + log_str;
                             }
-
-                            comment = comment + "\n\n" + tmp_test_case_script_names[i] + "\n\n" + log_str;
-
                         }
-
 
                         // TestRail Results
 
-                        var test_id = tests["tests"].SelectToken("$.[?(@.custom_auto_script_ref == '" + test_case_result.test_case_name + "')]")["id"].ToString().ToInt();
-                        var status_id = statuses.SelectToken("$.[?(@.label == '" + test_case_state + "')]")["id"].ToString().ToInt();
-
-                        results_json.results.Add(new
+                        if (tests != null && tests["tests"] != null)
                         {
-                            test_id = test_id,
-                            status_id = status_id,
-                            comment = comment,
-                            elapsed = test_case_result.elapsed + "s"
-                        });
+                            var testrail_test = tests["tests"].SelectToken("$.[?(@.custom_auto_script_ref == '" + test_case_result.test_case_name + "')]");
 
+                            if (testrail_test != null)
+                            {
+                                var test_id = testrail_test["id"].ToString().ToInt();
+                                var status_id = statuses.SelectToken("$.[?(@.label == '" + test_case_state + "')]")["id"].ToString().ToInt();
+
+                                results_json.results.Add(new
+                                {
+                                    test_id = test_id,
+                                    status_id = status_id,
+                                    comment = comment,
+                                    elapsed = test_case_result.elapsed + "s"
+                                });
+                            }
+                        }
                     }
 
                     // Pass the CoPilot results into the TestRail run
 
-                    var response_string = client.SeanPost("add_results/" + execution_group[0].external_exe_rec_run_id, results_json.ToJSONString());
+                    if (results_json.results.Count > 0)
+
+                        client.SeanPost("add_results/" + execution_group[0].external_exe_rec_run_id, results_json.ToJSONString());
+
                     StatusBarSetText("");
 
                     //GUICtrlSetData($status_input, "Getting the TestRail Test Statuses ... ")
@@ -564,7 +575,7 @@ namespace RunExecutionGroup
                     //GUICtrlSetData($status_input, "")
 
                     //cURL_cleanup()
-
+                    
                     // close the Main Window
                     Dispatcher.Invoke((Action)delegate () { this.Close(); });
                 }
